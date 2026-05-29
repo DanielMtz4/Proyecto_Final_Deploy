@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+
+    ports:
+      - "9090:9090"
+
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/rules:/etc/prometheus/rules
+
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+
+    ports:
+      - "3000:3000"
+
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+    restart: unless-stopped
+
+  node_exporter:
+    image: prom/node-exporter
+    container_name: node_exporter
+
+    ports:
+      - "9100:9100"
+
+    restart: unless-stopped
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor
+
+    ports:
+      - "8081:8080"
+
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+    restart: unless-stopped
+
+volumes:
+  grafana_data:
+
