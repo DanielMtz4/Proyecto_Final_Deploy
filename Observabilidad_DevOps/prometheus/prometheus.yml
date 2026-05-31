@@ -26,4 +26,7 @@ scrape_configs:
 
     static_configs:
       - targets: ["cadvisor:8080"]
-
+      
+  - job_name: "mariadb" 
+    static_configs: 
+      - targets: ["mariadb_exporter:9104"]
