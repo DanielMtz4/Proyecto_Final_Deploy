@@ -109,15 +109,18 @@ services:
 
     restart: unless-stopped
 
-    django:
-      build: ./django
+  django:
+    build:
+      context: ./django/app
+      dockerfile: Dockerfile  
 
-      container_name: django
+    container_name: django
 
-      ports:
-        - "8000:80"
+    ports:
+      - "8000:8000"
 
-      restart: unless-stopped
+    restart: unless-stopped
+
 
 volumes:
   grafana_data:
