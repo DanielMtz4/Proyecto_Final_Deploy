@@ -33,4 +33,4 @@ scrape_configs:
 
   - job_name: "django"
     static_configs:
-      - targets: ["django:8000"]
+      - targets: ["django:80"]
