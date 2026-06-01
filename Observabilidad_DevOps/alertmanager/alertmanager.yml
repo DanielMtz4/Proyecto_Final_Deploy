@@ -1,8 +1,21 @@
 global:
   resolve_timeout: 1m
 
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'mynameisdamc@gmail.com'
+  smtp_auth_username: 'mynameisdamc@gmail.com'
+  smtp_auth_password: 'orgm lmuh pncn tfsm'
+  smtp_require_tls: true
+
 route:
-  receiver: 'default'
+  receiver: 'correo'
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 1h
 
 receivers:
-  - name: 'default'
+  - name: 'correo'
+
+    email_configs:
+      - to: 'mynameisdamc@gmail.com'
+        send_resolved: true

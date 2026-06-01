@@ -1,5 +1,6 @@
 global:
   scrape_interval: 15s
+  evaluation_interval: 15s
 
 alerting:
   alertmanagers:
@@ -32,5 +33,25 @@ scrape_configs:
       - targets: ["mariadb_exporter:9104"]
 
   - job_name: "django"
+    metrics_path: /metrics
     static_configs:
       - targets: ["django:80"]
+
+  - job_name: "tomcat"
+    static_configs:
+      - targets: ["tomcat:9404"]
+
+  - job_name: "wordpress_http"
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://wordpress:80
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox_exporter:9115

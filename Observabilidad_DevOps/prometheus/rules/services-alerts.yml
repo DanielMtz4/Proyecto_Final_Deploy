@@ -1,0 +1,59 @@
+groups:
+  - name: services-alerts
+
+    rules:
+
+      - alert: DjangoDown
+        expr: up{job="django"} == 0
+        for: 1m
+
+        labels:
+          severity: critical
+
+        annotations:
+          summary: "Django caído"
+          description: "El servicio Django no responde"
+
+      - alert: TomcatDown
+        expr: up{job="tomcat"} == 0
+        for: 1m
+
+        labels:
+          severity: critical
+
+        annotations:
+          summary: "Tomcat caído"
+          description: "El servicio Tomcat no responde"
+
+      - alert: MariaDBDown
+        expr: up{job="mariadb"} == 0
+        for: 1m
+
+        labels:
+          severity: critical
+
+        annotations:
+          summary: "MariaDB caída"
+          description: "La base de datos no responde"
+
+      - alert: ContainerDown
+        expr: time() - container_last_seen{name=~"django|tomcat|mariadb|wordpress"} > 60
+        for: 0m
+
+        labels:
+          severity: critical
+
+        annotations:
+          summary: "Contenedor caído"
+          description: "El contenedor {{ $labels.name }} no ha sido detectado por cAdvisor en los últimos 60 segundos"
+
+      - alert: WordPressDown
+        expr: probe_success{job="wordpress_http"} == 0
+        for: 1m
+
+        labels:
+          severity: critical
+
+        annotations:
+          summary: "WordPress sin responder"
+          description: "WordPress no responde con código HTTP 2xx"

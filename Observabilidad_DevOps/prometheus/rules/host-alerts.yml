@@ -1,0 +1,37 @@
+groups:
+  - name: host-alerts
+
+    rules:
+
+      - alert: HighCPUUsage
+        expr: (100 - (avg(rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)) > 80
+        for: 5m
+
+        labels:
+          severity: warning
+
+        annotations:
+          summary: "Uso de CPU alto"
+          description: "CPU por encima del 80% durante más de 5 minutos en {{ $labels.instance }}"
+
+      - alert: HighMemoryUsage
+        expr: 100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) > 85
+        for: 5m
+
+        labels:
+          severity: warning
+
+        annotations:
+          summary: "Uso de memoria RAM alto"
+          description: "Memoria RAM por encima del 85% en {{ $labels.instance }}"
+
+      - alert: DiskAlmostFull
+        expr: 100 * (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|overlay"} / node_filesystem_size_bytes{fstype!~"tmpfs|overlay"})) > 90
+        for: 2m
+
+        labels:
+          severity: critical
+
+        annotations:
+          summary: "Disco casi lleno"
+          description: "El filesystem {{ $labels.mountpoint }} en {{ $labels.instance }} supera el 90% de uso"

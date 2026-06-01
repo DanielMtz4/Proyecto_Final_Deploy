@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Observabilidad</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #e2e8f0;
+            --accent-blue: #3b82f6;
+        }
+
+        * {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e3a8a 100%);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .navbar {
+            background: rgba(15, 23, 42, 0.95) !important;
+            border-bottom: 2px solid var(--accent-blue);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-blue), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 4rem 0;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(59, 130, 246, 0.15) 0%, rgba(15, 23, 42, 0) 100%);
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+        }
+
+        /* Service Cards */
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-blue);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            min-height: 4rem;
+        }
+
+        .service-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .service-description {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .service-status {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-blue), #0ea5e9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Section Headers */
+        .section-header {
+            position: relative;
+            padding-bottom: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent-blue), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-header .underline {
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), #8b5cf6);
+            border-radius: 2px;
+            margin-top: 1rem;
+        }
+
+        /* Architecture Section */
+        .architecture-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 15px;
+            padding: 3rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .architecture-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .flow-item {
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .flow-step {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--accent-blue), #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .flow-service {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .flow-description {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .flow-arrow {
+            font-size: 2rem;
+            color: var(--accent-blue);
+            align-self: center;
+        }
+
+        @media (max-width: 768px) {
+            .flow-arrow {
+                display: none;
+            }
+
+            .architecture-flow {
+                flex-direction: column;
+            }
+        }
+
+        /* Technologies Section */
+        .tech-category {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--accent-blue);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-category-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .tech-badge {
+            background: linear-gradient(135deg, var(--accent-blue), #0ea5e9);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .tech-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 2rem 0;
+            margin-top: 4rem;
+            text-align: center;
+            color: #cbd5e1;
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .service-card {
+                padding: 1.5rem;
+            }
+
+            .architecture-container {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .service-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .service-card:nth-child(1) { animation-delay: 0.1s; }
+        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(3) { animation-delay: 0.3s; }
+        .service-card:nth-child(4) { animation-delay: 0.4s; }
+        .service-card:nth-child(5) { animation-delay: 0.5s; }
+        .service-card:nth-child(6) { animation-delay: 0.6s; }
+        .service-card:nth-child(7) { animation-delay: 0.7s; }
+
+        /* Icon Colors */
+        .icon-primary { color: #3b82f6; }
+        .icon-warning { color: #f59e0b; }
+        .icon-danger { color: #ef4444; }
+        .icon-success { color: #10b981; }
+        .icon-info { color: #06b6d4; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-lg">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-chart-line"></i> Observabilidad DevOps
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#servicios">Servicios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#arquitectura">Arquitectura</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tecnologias">Tecnologías</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/metrics" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> Métricas
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container-lg">
+            <h1 class="hero-title">
+                <i class="fas fa-cloud-monitor"></i> Dashboard de Observabilidad
+            </h1>
+            <p class="hero-subtitle">Sistema integrado de monitoreo con Docker, Prometheus, Grafana y Alertmanager</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container-lg py-5">
+        <!-- Servicios Section -->
+        <section id="servicios">
+            <div class="section-header">
+                <h2><i class="fas fa-cube"></i> Servicios Monitoreados</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="row g-4">
+                {% for service in services %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            {% if service.icon == 'django' %}
+                                <i class="fab fa-python icon-primary"></i>
+                            {% elif service.icon == 'tomcat' %}
+                                <i class="fas fa-server icon-warning"></i>
+                            {% elif service.icon == 'database' %}
+                                <i class="fas fa-database icon-danger"></i>
+                            {% elif service.icon == 'wordpress' %}
+                                <i class="fab fa-wordpress icon-success"></i>
+                            {% elif service.icon == 'prometheus' %}
+                                <i class="fas fa-fire icon-info"></i>
+                            {% elif service.icon == 'chart-line' %}
+                                <i class="fas fa-chart-line icon-success"></i>
+                            {% elif service.icon == 'bell' %}
+                                <i class="fas fa-bell icon-danger"></i>
+                            {% endif %}
+                        </div>
+                        <h3 class="service-name">{{ service.name }}</h3>
+                        <p class="service-description">{{ service.description }}</p>
+                        <span class="service-status">
+                            <i class="fas fa-check-circle"></i> Monitoreado
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Arquitectura Section -->
+        <section id="arquitectura" class="py-5">
+            <div class="section-header">
+                <h2><i class="fas fa-sitemap"></i> Arquitectura del Sistema</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="architecture-container">
+                <div class="architecture-flow">
+                    {% for item in architecture_flow %}
+                    <div class="flow-item">
+                        <div class="flow-step">{{ item.step }}</div>
+                        <div class="flow-service">{{ item.service }}</div>
+                        <div class="flow-description">{{ item.description }}</div>
+                    </div>
+                    {% if forloop.counter < architecture_flow|length %}
+                    <div class="flow-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(59, 130, 246, 0.3);">
+                    <p style="color: #cbd5e1; margin: 0;">
+                        <strong style="color: white;">Flujo de trabajo:</strong> Los contenedores Docker ejecutan los servicios con exportadores de métricas. 
+                        Prometheus realiza scraping de estas métricas automáticamente según su configuración. 
+                        Grafana consume estos datos para crear dashboards interactivos. 
+                        Alertmanager gestiona las alertas basadas en las reglas definidas en Prometheus.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tecnologías Section -->
+        <section id="tecnologias" class="py-5">
+            <div class="section-header">
+                <h2><i class="fas fa-layer-group"></i> Stack Tecnológico</h2>
+                <div class="underline"></div>
+            </div>
+            <div class="row">
+                {% for category in technologies %}
+                <div class="col-lg-6">
+                    <div class="tech-category">
+                        <div class="tech-category-title">
+                            <i class="fas fa-check"></i> {{ category.category }}
+                        </div>
+                        <div class="tech-badges">
+                            {% for tech in category.items %}
+                            <span class="tech-badge">{{ tech }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-5 mt-5">
+            <div class="architecture-container">
+                <div style="text-align: center;">
+                    <h3 style="color: white; margin-bottom: 1.5rem;">Accede a tus herramientas de observabilidad</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+                        <a href="/metrics" target="_blank" class="btn btn-primary btn-lg">
+                            <i class="fas fa-chart-bar"></i> Ver Métricas
+                        </a>
+                        <a href="#" class="btn btn-outline-light btn-lg" onclick="alert('Configura la URL de Grafana en docker-compose.yml')">
+                            <i class="fas fa-chart-line"></i> Ir a Grafana
+                        </a>
+                        <a href="#" class="btn btn-outline-light btn-lg" onclick="alert('Configura la URL de Prometheus en docker-compose.yml')">
+                            <i class="fas fa-fire"></i> Ir a Prometheus
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-lg">
+            <p>&copy; 2026 Sistema de Observabilidad DevOps | Construido con Docker, Prometheus, Grafana y Alertmanager</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                <i class="fas fa-info-circle"></i> Accede a las métricas en <a href="/metrics" style="color: var(--accent-blue); text-decoration: none;">/metrics</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Añade animación de scroll suave
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

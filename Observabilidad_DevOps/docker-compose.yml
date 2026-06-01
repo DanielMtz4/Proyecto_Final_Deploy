@@ -85,6 +85,7 @@ services:
 
     volumes:
       - mariadb_data:/var/lib/mysql
+      - ./mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql
 
     restart: unless-stopped
 
@@ -127,17 +128,46 @@ services:
     container_name: wordpress
 
     ports:
-      - "8080:80"
+      - "8083:80"
 
     environment:
       WORDPRESS_DB_HOST: mariadb:3306
       WORDPRESS_DB_USER: root
       WORDPRESS_DB_PASSWORD: rootpass
-      WORDPRESS_DB_NAME: observabilidad
+      WORDPRESS_DB_NAME: wordpress_db
 
     depends_on:
       - mariadb
 
+    restart: unless-stopped
+
+  blackbox_exporter:
+    image: prom/blackbox-exporter
+
+    container_name: blackbox_exporter
+
+    volumes:
+      - ./blackbox/blackbox.yml:/etc/blackbox_exporter/config.yml
+
+    ports:
+      - "9115:9115"
+
+    restart: unless-stopped
+
+  tomcat:
+    build:
+      context: ./tomcat
+
+    container_name: tomcat
+
+    ports:
+      - "8082:8080"
+      - "9404:9404"
+
+    
+    restart: unless-stopped
+
+  
 volumes:
   grafana_data:
   mariadb_data:

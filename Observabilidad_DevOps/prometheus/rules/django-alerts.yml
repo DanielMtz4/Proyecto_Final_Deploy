@@ -1,11 +1,3 @@
-﻿groups:
-  - name: django-alerts
-    rules:
-      - alert: DjangoDown
-        expr: up{job="django"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Django fuera de servicio"
-          description: "Prometheus no puede comunicarse con Django"
+﻿# DjangoDown está consolidada en services-alerts.yml
+# Este archivo se mantiene vacío para evitar alertas duplicadas
+groups: []
