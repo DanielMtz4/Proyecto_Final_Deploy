@@ -1,0 +1,24 @@
+# Copiar como alertmanager.yml y completar con credenciales reales
+# El archivo alertmanager.yml está en .gitignore — nunca subir al repo
+
+global:
+  resolve_timeout: 1m
+
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'TU_CORREO@gmail.com'
+  smtp_auth_username: 'TU_CORREO@gmail.com'
+  smtp_auth_password: 'TU_APP_PASSWORD_DE_GMAIL'
+  smtp_require_tls: true
+
+route:
+  receiver: 'correo'
+  group_wait: 10s
+  group_interval: 1m
+  repeat_interval: 1h
+
+receivers:
+  - name: 'correo'
+
+    email_configs:
+      - to: 'TU_CORREO@gmail.com'
+        send_resolved: true
