@@ -2,9 +2,9 @@ global:
   resolve_timeout: 1m
 
   smtp_smarthost: 'smtp.gmail.com:587'
-  smtp_from: 'TU_CORREO@gmail.com'
-  smtp_auth_username: 'TU_CORREO@gmail.com'
-  smtp_auth_password: 'TU_APP_PASSWORD'
+  smtp_from: '${SMTP_FROM}'
+  smtp_auth_username: '${SMTP_USERNAME}'
+  smtp_auth_password: '${SMTP_PASSWORD}'
   smtp_require_tls: true
 
 route:
@@ -17,5 +17,5 @@ receivers:
   - name: 'correo'
 
     email_configs:
-      - to: 'TU_CORREO@gmail.com'
+      - to: '${SMTP_TO}'
         send_resolved: true

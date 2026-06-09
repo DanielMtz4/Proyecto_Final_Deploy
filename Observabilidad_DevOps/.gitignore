@@ -1,6 +1,5 @@
 # Credenciales y secretos — NUNCA subir al repositorio
 .env
-alertmanager/alertmanager.yml
 mariadb_exporter.cnf
 
 # Datos persistentes

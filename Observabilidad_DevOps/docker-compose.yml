@@ -33,6 +33,16 @@ services:
     image: prom/alertmanager
     container_name: alertmanager
 
+    environment:
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_TO: ${SMTP_TO}
+
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--config.expand-env=true'
+
     ports:
       - "9093:9093"
 
