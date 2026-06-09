@@ -115,11 +115,13 @@ services:
 
     container_name: mariadb_exporter
 
-    environment:
-      DATA_SOURCE_NAME: "exporter:${EXPORTER_PASSWORD}@(mariadb:3306)/"
-
     command:
+      - "--config.my-cnf=/etc/.my.cnf"
+      - "--mysqld.address=mariadb:3306"
       - "--web.listen-address=:9104"
+
+    volumes:
+      - ./mariadb_exporter.cnf:/etc/.my.cnf:ro
 
     ports:
       - "9104:9104"
