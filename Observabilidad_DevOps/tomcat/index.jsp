@@ -12,7 +12,8 @@
     long heapUsed = memBean.getHeapMemoryUsage().getUsed();
     long heapMax = memBean.getHeapMemoryUsage().getMax();
     long nonHeapUsed = memBean.getNonHeapMemoryUsage().getUsed();
-    double cpuUsage = osBean.getProcessCpuLoad() * 100;
+    double loadAvg = osBean.getSystemLoadAverage();
+    double cpuUsage = loadAvg >= 0 ? (loadAvg / osBean.getAvailableProcessors()) * 100 : 0;
     int threadCount = threadBean.getThreadCount();
     long uptime = runtimeBean.getUptime();
     
@@ -20,7 +21,15 @@
     long heapUsedMB = heapUsed / (1024 * 1024);
     long heapMaxMB = heapMax / (1024 * 1024);
     long nonHeapUsedMB = nonHeapUsed / (1024 * 1024);
-    double heapPercent = (heapUsed * 100.0) / heapMax;
+    double heapPercent = heapMax > 0 ? (heapUsed * 100.0) / heapMax : 0;
+    int heapPercentInt = (int)Math.min(Math.max(heapPercent, 0), 100);
+    String heapPercentString = heapPercentInt + "%";
+    int nonHeapPercentInt = (int)Math.min(Math.max(nonHeapUsedMB / 128.0 * 100, 0), 100);
+    String nonHeapPercentString = nonHeapPercentInt + "%";
+    int cpuPercentInt = (int)Math.min(Math.max(cpuUsage, 0), 100);
+    String cpuPercentString = cpuPercentInt + "%";
+    int threadPercentInt = (int)Math.min(Math.max((threadCount / 200.0) * 100, 0), 100);
+    String threadPercentString = threadPercentInt + "%";
     
     // Uptime format
     long days = uptime / (1000 * 60 * 60 * 24);
@@ -493,7 +502,7 @@
                         <div class="metric-value"><%= heapUsedMB %> MB</div>
                         <div class="metric-unit">de <%= heapMaxMB %> MB disponibles</div>
                         <div class="metric-bar">
-                            <div class="metric-bar-fill" style="width: <%= (int)heapPercent %>%"></div>
+                            <div class="metric-bar-fill" style="width: <%= heapPercentString %>;"></div>
                         </div>
                         <small style="color: #cbd5e1; margin-top: 0.5rem;">Uso: <%= String.format("%.1f%%", heapPercent) %></small>
                     </div>
@@ -509,7 +518,7 @@
                         <div class="metric-value"><%= nonHeapUsedMB %> MB</div>
                         <div class="metric-unit">Metaspace, Code Cache, etc.</div>
                         <div class="metric-bar">
-                            <div class="metric-bar-fill" style="width: <%= Math.min(nonHeapUsedMB / 128, 100) %>%"></div>
+                            <div class="metric-bar-fill" style="width: <%= nonHeapPercentString %>;"></div>
                         </div>
                         <small style="color: #cbd5e1; margin-top: 0.5rem;">Infraestructura</small>
                     </div>
@@ -525,7 +534,7 @@
                         <div class="metric-value"><%= String.format("%.1f%%", cpuUsage) %></div>
                         <div class="metric-unit">del proceso Tomcat</div>
                         <div class="metric-bar">
-                            <div class="metric-bar-fill" style="width: <%= (int)cpuUsage %>%"></div>
+                            <div class="metric-bar-fill" style="width: <%= cpuPercentString %>;"></div>
                         </div>
                         <small style="color: #cbd5e1; margin-top: 0.5rem;">En tiempo real</small>
                     </div>
@@ -541,7 +550,7 @@
                         <div class="metric-value"><%= threadCount %></div>
                         <div class="metric-unit">threads activos</div>
                         <div class="metric-bar">
-                            <div class="metric-bar-fill" style="width: <%= Math.min((threadCount / 200.0) * 100, 100) %>%"></div>
+                            <div class="metric-bar-fill" style="width: <%= threadPercentString %>;"></div>
                         </div>
                         <small style="color: #cbd5e1; margin-top: 0.5rem;">Concurrencia</small>
                     </div>
