@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.lang.management.*" %>
+<%@ page import="com.sun.management.OperatingSystemMXBean" %>
 <%@ page import="java.util.*" %>
 <%
     // Obtener información de la JVM
-    OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+    OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
     MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
     RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
     ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
@@ -12,8 +13,13 @@
     long heapUsed = memBean.getHeapMemoryUsage().getUsed();
     long heapMax = memBean.getHeapMemoryUsage().getMax();
     long nonHeapUsed = memBean.getNonHeapMemoryUsage().getUsed();
-    double loadAvg = osBean.getSystemLoadAverage();
-    double cpuUsage = loadAvg >= 0 ? (loadAvg / osBean.getAvailableProcessors()) * 100 : 0;
+    double cpuUsage = osBean.getProcessCpuLoad();
+    if (cpuUsage < 0) {
+        double loadAvg = osBean.getSystemLoadAverage();
+        cpuUsage = loadAvg >= 0 ? (loadAvg / osBean.getAvailableProcessors()) * 100 : 0;
+    } else {
+        cpuUsage *= 100;
+    }
     int threadCount = threadBean.getThreadCount();
     long uptime = runtimeBean.getUptime();
     
